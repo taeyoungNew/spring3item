@@ -1,7 +1,13 @@
 package com.taeyeong.spring3item;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
@@ -32,6 +38,31 @@ class Person {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+}
+
+class LottoNumGenerator {
+	public List<Integer> generate(final int money) {
+		if(!isValidMoney(money)) {
+			throw new RuntimeException("올바른 금액이 아닙니다.");
+		}
+		
+		return generate();
+	}
+
+	private List<Integer> generate() {
+		
+		return new Random()
+				.ints(1, 45 + 1)
+				.distinct()	// 중복없음
+				.limit(6)	// 여섯자리
+				.boxed()
+				.collect(Collectors.toList());
+	}
+
+	private boolean isValidMoney(final int money) {
+		// TODO 自動生成されたメソッド・スタブ
+		return money == 1000;
 	}
 }
 
@@ -119,6 +150,19 @@ class AssertionDemo {
 		assertEquals("message content", exception.getMessage());
 	}
 	
-	
+	@Test
+	@DisplayName("로또번호갯수테스트")
+	void lottoNumSizeTest() {
+		// given 준비
+		final LottoNumGenerator lottoNumGenerator = new LottoNumGenerator();
+		final int price = 1000;
+		
+		// when	실행
+		final List<Integer> lottoNumbers = lottoNumGenerator.generate(price);
+		
+		
+		// then	검증
+		assertThat(lottoNumbers.size()).isEqualTo(1);
+	}
 
 }
